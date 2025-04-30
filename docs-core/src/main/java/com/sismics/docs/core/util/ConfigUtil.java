@@ -22,9 +22,9 @@ public class ConfigUtil {
         ConfigDao configDao = new ConfigDao();
         Config config = configDao.getById(configType);
 
-        if (configType == ConfigType.GUEST_LOGIN){
-            return "true";
-        }
+        // if (configType == ConfigType.GUEST_LOGIN){
+        //     return "true";
+        // }
         
         if (config == null) {
             throw new IllegalStateException("Config parameter not found: " + configType);
