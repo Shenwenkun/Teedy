@@ -53,23 +53,6 @@ import java.util.Set;
 public class UserResource extends BaseResource {
     /**
      * Creates a new user.
-     *
-     * @api {put} /user Register a new user
-     * @apiName PutUser
-     * @apiGroup User
-     * @apiParam {String{3..50}} username Username
-     * @apiParam {String{8..50}} password Password
-     * @apiParam {String{1..100}} email E-mail
-     * @apiParam {Number} storage_quota Storage quota (in bytes)
-     * @apiSuccess {String} status Status OK
-     * @apiError (client) ForbiddenError Access denied
-     * @apiError (client) ValidationError Validation error
-     * @apiError (server) PrivateKeyError Error while generating a private key
-     * @apiError (client) AlreadyExistingUsername Login already used
-     * @apiError (server) UnknownError Unknown server error
-     * @apiPermission admin
-     * @apiVersion 1.5.0
-     *
      * @param username User's username
      * @param password Password
      * @param email E-Mail
@@ -124,16 +107,6 @@ public class UserResource extends BaseResource {
     /**
      * Updates the current user informations.
      *
-     * @api {post} /user Update the current user
-     * @apiName PostUser
-     * @apiGroup User
-     * @apiParam {String{8..50}} password Password
-     * @apiParam {String{1..100}} email E-mail
-     * @apiSuccess {String} status Status OK
-     * @apiError (client) ForbiddenError Access denied or connected as guest
-     * @apiError (client) ValidationError Validation error
-     * @apiPermission user
-     * @apiVersion 1.5.0
      *
      * @param password Password
      * @param email E-Mail
@@ -174,20 +147,6 @@ public class UserResource extends BaseResource {
     /**
      * Updates a user informations.
      *
-     * @api {post} /user/:username Update a user
-     * @apiName PostUserUsername
-     * @apiGroup User
-     * @apiParam {String} username Username
-     * @apiParam {String{8..50}} password Password
-     * @apiParam {String{1..100}} email E-mail
-     * @apiParam {Number} storage_quota Storage quota (in bytes)
-     * @apiParam {Boolean} disabled Disabled status
-     * @apiSuccess {String} status Status OK
-     * @apiError (client) ForbiddenError Access denied
-     * @apiError (client) ValidationError Validation error
-     * @apiError (client) UserNotFound User not found
-     * @apiPermission admin
-     * @apiVersion 1.5.0
      *
      * @param username Username
      * @param password Password
@@ -260,20 +219,6 @@ public class UserResource extends BaseResource {
      * This resource is used to authenticate the user and create a user session.
      * The "session" is only used to identify the user, no other data is stored in the session.
      *
-     * @api {post} /user/login Login a user
-     * @apiDescription This resource creates an authentication token and gives it back in a cookie.
-     * All authenticated resources will check this cookie to find the user currently logged in.
-     * @apiName PostUserLogin
-     * @apiGroup User
-     * @apiParam {String} username Username
-     * @apiParam {String} password Password (optional for guest login)
-     * @apiParam {String} code TOTP validation code
-     * @apiParam {Boolean} remember If true, create a long lasted token
-     * @apiSuccess {String} auth_token A cookie named auth_token containing the token ID
-     * @apiError (client) ForbiddenError Access denied
-     * @apiError (client) ValidationCodeRequired A TOTP validation code is required
-     * @apiPermission none
-     * @apiVersion 1.5.0
      *
      * @param username Username
      * @param password Password
@@ -349,16 +294,6 @@ public class UserResource extends BaseResource {
     /**
      * Logs out the user and deletes the active session.
      *
-     * @api {post} /user/logout Logout a user
-     * @apiDescription This resource deletes the authentication token created by POST /user/login and removes the cookie.
-     * @apiName PostUserLogout
-     * @apiGroup User
-     * @apiSuccess {String} auth_token An expired cookie named auth_token containing no value
-     * @apiError (client) ForbiddenError Access denied
-     * @apiError (server) AuthenticationTokenError Error deleting the authentication token
-     * @apiPermission user
-     * @apiVersion 1.5.0
-     *
      * @return Response
      */
     @POST
@@ -397,16 +332,6 @@ public class UserResource extends BaseResource {
 
     /**
      * Deletes the current user.
-     *
-     * @api {delete} /user Delete the current user
-     * @apiDescription All associated entities will be deleted as well.
-     * @apiName DeleteUser
-     * @apiGroup User
-     * @apiSuccess {String} status Status OK
-     * @apiError (client) ForbiddenError Access denied or the user cannot be deleted
-     * @apiError (client) UserUsedInRouteModel The user is used in a route model
-     * @apiPermission user
-     * @apiVersion 1.5.0
      *
      * @return Response
      */
@@ -447,18 +372,6 @@ public class UserResource extends BaseResource {
     
     /**
      * Deletes a user.
-     *
-     * @api {delete} /user/:username Delete a user
-     * @apiDescription All associated entities will be deleted as well.
-     * @apiName DeleteUserUsername
-     * @apiGroup User
-     * @apiParam {String} username Username
-     * @apiSuccess {String} status Status OK
-     * @apiError (client) ForbiddenError Access denied or the user cannot be deleted
-     * @apiError (client) UserNotFound The user does not exist
-     * @apiError (client) UserUsedInRouteModel The user is used in a route model
-     * @apiPermission admin
-     * @apiVersion 1.5.0
      *
      * @param username Username
      * @return Response
@@ -515,17 +428,6 @@ public class UserResource extends BaseResource {
 
     /**
      * Disable time-based one-time password for a specific user.
-     *
-     * @api {post} /user/:username/disable_totp Disable TOTP authentication for a specific user
-     * @apiName PostUserUsernameDisableTotp
-     * @apiGroup User
-     * @apiParam {String} username Username
-     * @apiSuccess {String} status Status OK
-     * @apiError (client) ForbiddenError Access denied or connected as guest
-     * @apiError (client) ValidationError Validation error
-     * @apiPermission user
-     * @apiVersion 1.5.0
-     *
      * @param username Username
      * @return Response
      */
@@ -557,21 +459,6 @@ public class UserResource extends BaseResource {
     /**
      * Returns the information about the connected user.
      *
-     * @api {get} /user Get the current user
-     * @apiName GetUser
-     * @apiGroup User
-     * @apiSuccess {Boolean} anonymous True if no user is connected
-     * @apiSuccess {Boolean} is_default_password True if the admin has the default password
-     * @apiSuccess {Boolean} onboarding True if the UI needs to display the onboarding
-     * @apiSuccess {String} username Username
-     * @apiSuccess {String} email E-mail
-     * @apiSuccess {Number} storage_quota Storage quota (in bytes)
-     * @apiSuccess {Number} storage_current Quota used (in bytes)
-     * @apiSuccess {Boolean} totp_enabled True if TOTP authentication is enabled
-     * @apiSuccess {String[]} base_functions Base functions
-     * @apiSuccess {String[]} groups Groups
-     * @apiPermission none
-     * @apiVersion 1.5.0
      *
      * @return Response
      */
@@ -632,21 +519,6 @@ public class UserResource extends BaseResource {
     /**
      * Returns the information about a user.
      *
-     * @api {get} /user/:username Get a user
-     * @apiName GetUserUsername
-     * @apiGroup User
-     * @apiParam {String} username Username
-     * @apiSuccess {String} username Username
-     * @apiSuccess {String} email E-mail
-     * @apiSuccess {Boolean} totp_enabled True if TOTP authentication is enabled
-     * @apiSuccess {Number} storage_quota Storage quota (in bytes)
-     * @apiSuccess {Number} storage_current Quota used (in bytes)
-     * @apiSuccess {String[]} groups Groups
-     * @apiSuccess {Boolean} disabled True if the user is disabled
-     * @apiError (client) ForbiddenError Access denied
-     * @apiError (client) UserNotFound The user does not exist
-     * @apiPermission user
-     * @apiVersion 1.5.0
      *
      * @param username Username
      * @return Response
@@ -689,24 +561,6 @@ public class UserResource extends BaseResource {
     /**
      * Returns all active users.
      *
-     * @api {get} /user/list Get users
-     * @apiName GetUserList
-     * @apiGroup User
-     * @apiParam {Number} sort_column Column index to sort on
-     * @apiParam {Boolean} asc If true, sort in ascending order
-     * @apiParam {String} group Filter on this group
-     * @apiSuccess {Object[]} users List of users
-     * @apiSuccess {String} users.id ID
-     * @apiSuccess {String} users.username Username
-     * @apiSuccess {String} users.email E-mail
-     * @apiSuccess {Boolean} users.totp_enabled True if TOTP authentication is enabled
-     * @apiSuccess {Number} users.storage_quota Storage quota (in bytes)
-     * @apiSuccess {Number} users.storage_current Quota used (in bytes)
-     * @apiSuccess {Number} users.create_date Create date (timestamp)
-     * @apiSuccess {Number} users.disabled True if the user is disabled
-     * @apiError (client) ForbiddenError Access denied
-     * @apiPermission user
-     * @apiVersion 1.5.0
      *
      * @param sortColumn Sort index
      * @param asc If true, ascending sorting, else descending
@@ -758,19 +612,6 @@ public class UserResource extends BaseResource {
     /**
      * Returns all active sessions.
      *
-     * @api {get} /user/session Get active sessions
-     * @apiDescription This resource lists all active token which can be used to log in to the current user account.
-     * @apiName GetUserSession
-     * @apiGroup User
-     * @apiSuccess {Object[]} sessions List of sessions
-     * @apiSuccess {Number} create_date Create date of this token
-     * @apiSuccess {String} ip IP used to log in
-     * @apiSuccess {String} user_agent User agent used to log in
-     * @apiSuccess {Number} last_connection_date Last connection date (timestamp)
-     * @apiSuccess {Boolean} current If true, this token is the current one
-     * @apiError (client) ForbiddenError Access denied
-     * @apiPermission user
-     * @apiVersion 1.5.0
      *
      * @return Response
      */
@@ -810,14 +651,6 @@ public class UserResource extends BaseResource {
     /**
      * Deletes all active sessions except the one used for this request.
      *
-     * @api {delete} /user/session Delete all sessions
-     * @apiDescription This resource deletes all active token linked to this account, except the one used to make this request.
-     * @apiName DeleteUserSession
-     * @apiGroup User
-     * @apiSuccess {String} status Status OK
-     * @apiError (client) ForbiddenError Access denied or connected as guest
-     * @apiPermission user
-     * @apiVersion 1.5.0
      *
      * @return Response
      */
@@ -844,14 +677,6 @@ public class UserResource extends BaseResource {
     /**
      * Mark the onboarding experience as passed.
      *
-     * @api {post} /user/onboarded Mark the onboarding experience as passed
-     * @apiDescription Once the onboarding experience has been passed by the user, this resource prevent it from being displayed again.
-     * @apiName PostUserOnboarded
-     * @apiGroup User
-     * @apiSuccess {String} status Status OK
-     * @apiError (client) ForbiddenError Access denied
-     * @apiPermission user
-     * @apiVersion 1.7.0
      *
      * @return Response
      */
@@ -877,15 +702,6 @@ public class UserResource extends BaseResource {
     /**
      * Enable time-based one-time password.
      *
-     * @api {post} /user/enable_totp Enable TOTP authentication
-     * @apiDescription This resource enables the Time-based One-time Password authentication.
-     * All following login will need a validation code generated from the given secret seed.
-     * @apiName PostUserEnableTotp
-     * @apiGroup User
-     * @apiSuccess {String} secret Secret TOTP seed to initiate the algorithm
-     * @apiError (client) ForbiddenError Access denied or connected as guest
-     * @apiPermission user
-     * @apiVersion 1.5.0
      *
      * @return Response
      */
@@ -914,15 +730,6 @@ public class UserResource extends BaseResource {
     /**
      * Test time-based one-time password.
      *
-     * @api {post} /user/test_totp Test TOTP authentication
-     * @apiDescription Test a TOTP validation code.
-     * @apiName PostUserTestTotp
-     * @apiParam {String} code TOTP validation code
-     * @apiGroup User
-     * @apiSuccess {String} status Status OK
-     * @apiError (client) ForbiddenError The validation code is not valid or access denied
-     * @apiPermission user
-     * @apiVersion 1.6.0
      *
      * @return Response
      */
@@ -954,16 +761,6 @@ public class UserResource extends BaseResource {
     
     /**
      * Disable time-based one-time password for the current user.
-     *
-     * @api {post} /user/disable_totp Disable TOTP authentication for the current user
-     * @apiName PostUserDisableTotp
-     * @apiGroup User
-     * @apiParam {String{1..100}} password Password
-     * @apiSuccess {String} status Status OK
-     * @apiError (client) ForbiddenError Access denied or connected as guest
-     * @apiError (client) ValidationError Validation error
-     * @apiPermission user
-     * @apiVersion 1.5.0
      *
      * @param password Password
      * @return Response
@@ -997,15 +794,6 @@ public class UserResource extends BaseResource {
 
     /**
      * Create a key to reset a password and send it by email.
-     *
-     * @api {post} /user/password_lost Create a key to reset a password and send it by email
-     * @apiName PostUserPasswordLost
-     * @apiGroup User
-     * @apiParam {String} username Username
-     * @apiSuccess {String} status Status OK
-     * @apiError (client) ValidationError Validation error
-     * @apiPermission none
-     * @apiVersion 1.5.0
      *
      * @param username Username
      * @return Response
@@ -1050,17 +838,6 @@ public class UserResource extends BaseResource {
 
     /**
      * Reset the user's password.
-     *
-     * @api {post} /user/password_reset Reset the user's password
-     * @apiName PostUserPasswordReset
-     * @apiGroup User
-     * @apiParam {String} key Password recovery key
-     * @apiParam {String} password New password
-     * @apiSuccess {String} status Status OK
-     * @apiError (client) KeyNotFound Password recovery key not found
-     * @apiError (client) ValidationError Validation error
-     * @apiPermission none
-     * @apiVersion 1.5.0
      *
      * @param passwordResetKey Password reset key
      * @param password New password
