@@ -301,6 +301,20 @@
       "username": "Username",
       "create_date": "Create date",
       "totp_enabled": "Two-factor authentication enabled for this account",
+      "registration_requests": "Registration request",
+      "registration_request": {
+        "username": "username",
+        "email": "email",
+        "create_date": "request time",
+        "actions": "operation",
+        "approve": "approve",
+        "reject": "reject",
+        "no_requests": "no requests",
+        "approve_title": "Approve registration requests",
+        "approve_message": "Are you sure you want to approve the registration request of user {{username}}?",
+        "reject_title": "Reject registration requests",
+        "reject_message": "Are you sure you want to reject the registration request of user {{username}}?"
+      },
       "edit": {
         "delete_user_title": "Delete user",
         "delete_user_message": "Do you really want to delete this user? All associated documents, files and tags will be deleted",

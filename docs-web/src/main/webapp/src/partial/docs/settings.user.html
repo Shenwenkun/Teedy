@@ -3,30 +3,72 @@
   <a class="btn btn-primary" href="#/settings/user/add">{{ 'settings.user.add_user' | translate }}</a>
 </h1>
 
-<div class="row">
+<ul class="nav nav-tabs">
+  <li role="presentation" ng-class="{ active: !showRegistrationRequests }">
+    <a href ng-click="showRegistrationRequests = false">{{ 'settings.user.user_list' | translate }}</a>
+  </li>
+  <li role="presentation" ng-class="{ active: showRegistrationRequests }">
+    <a href ng-click="showRegistrationRequests = true">{{ 'settings.user.registration_requests' | translate }}</a>
+  </li>
+</ul>
+
+<div class="row" ng-show="!showRegistrationRequests">
   <div class="col-md-4 well">
     <table class="table table-hover table-users">
       <thead>
-        <tr>
-          <th>{{ 'settings.user.username' | translate }}</th>
-          <th>{{ 'settings.user.create_date' | translate }}</th>
-        </tr>
+      <tr>
+        <th>{{ 'settings.user.username' | translate }}</th>
+        <th>{{ 'settings.user.create_date' | translate }}</th>
+      </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="user in users | orderBy: 'username'" ng-click="editUser(user)"
-            ng-class="{ active: $stateParams.username == user.username }">
-          <td>
-            <span ng-if="!user.disabled">{{ user.username }}</span>
-            <s ng-if="user.disabled">{{ user.username }}</s>
-            <span class="fas fa-lock" ng-show="user.totp_enabled" uib-tooltip="{{ 'settings.user.totp_enabled' | translate }}"></span>
-          </td>
-          <td>{{ user.create_date | date: dateFormat }}</td>
-        </tr>
+      <tr ng-repeat="user in users | orderBy: 'username'" ng-click="editUser(user)"
+          ng-class="{ active: $stateParams.username == user.username }">
+        <td>
+          <span ng-if="!user.disabled">{{ user.username }}</span>
+          <s ng-if="user.disabled">{{ user.username }}</s>
+          <span class="fas fa-lock" ng-show="user.totp_enabled" uib-tooltip="{{ 'settings.user.totp_enabled' | translate }}"></span>
+        </td>
+        <td>{{ user.create_date | date: dateFormat }}</td>
+      </tr>
       </tbody>
     </table>
   </div>
 
   <div class="col-md-8">
     <div ui-view="user"></div>
+  </div>
+</div>
+
+<div class="row" ng-show="showRegistrationRequests">
+  <div class="col-md-12">
+    <table class="table table-hover">
+      <thead>
+      <tr>
+        <th>{{ 'settings.user.registration_request.username' | translate }}</th>
+        <th>{{ 'settings.user.registration_request.email' | translate }}</th>
+        <th>{{ 'settings.user.registration_request.create_date' | translate }}</th>
+        <th>{{ 'settings.user.registration_request.actions' | translate }}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="request in registrationRequests">
+        <td>{{ request.username }}</td>
+        <td>{{ request.email }}</td>
+        <td>{{ request.createDate | date: dateFormat }}</td>
+        <td>
+          <button class="btn btn-success btn-sm" ng-click="approveRequest(request)">
+            <span class="fas fa-check"></span> {{ 'settings.user.registration_request.approve' | translate }}
+          </button>
+          <button class="btn btn-danger btn-sm" ng-click="rejectRequest(request)">
+            <span class="fas fa-times"></span> {{ 'settings.user.registration_request.reject' | translate }}
+          </button>
+        </td>
+      </tr>
+      <tr ng-if="registrationRequests.length === 0">
+        <td colspan="4" class="text-center">{{ 'settings.user.registration_request.no_requests' | translate }}</td>
+      </tr>
+      </tbody>
+    </table>
   </div>
 </div>

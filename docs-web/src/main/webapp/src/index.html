@@ -110,6 +110,7 @@
     <script src="app/docs/directive/AddSpaceBetween.js" type="text/javascript"></script>
     <script src="app/docs/directive/InvertTextColor.js" type="text/javascript"></script>
     <!-- endref -->
+    <script src="app/docs/controller/ModalRegistrationRequest.js"></script>
   </head>
   <body translate-cloak ng-cloak>
     <onboarding-popover ng-if="onboardingEnabled" enabled="onboardingEnabled" steps="onboardingSteps"></onboarding-popover>
@@ -148,7 +149,7 @@
 
         <ul class="nav navbar-nav navbar-right" ng-show="!userInfo.anonymous">
           <li>
-            <a href="{{ userInfo.username == 'guest' ? '#/user/guest' : '#/settings/account' }}"
+            <a ng-href="{{ userInfo.username == 'guest' ? '#/user/guest' : '#/settings/account' }}"
                translate-attr="{ title: 'index.logged_as' }" translate-values="{ username: userInfo.username }">
               <span class="fas fa-user"></span>
               {{ userInfo.username }}
@@ -167,7 +168,7 @@
         </ul>
       </div>
     </nav>
-    
+
     <div ui-view="page">
     </div>
 
@@ -205,7 +206,7 @@
               <li><a href ng-click="changeLanguage('pt')" ng-class="{ 'bg-info': currentLang == 'pt' }">Português</a></li>
               <li><a href ng-click="changeLanguage('el')" ng-class="{ 'bg-info': currentLang == 'el' }">Ελληνικά</a></li>
               <li><a href ng-click="changeLanguage('ru')" ng-class="{ 'bg-info': currentLang == 'ru' }">Pусский</a></li>
-              <li><a href ng-click="changeLanguage('pl')" ng-class="{ 'bg-info': currentLang == 'pl' }">Polski</a></li>              
+              <li><a href ng-click="changeLanguage('pl')" ng-class="{ 'bg-info': currentLang == 'pl' }">Polski</a></li>
 			        <li><a href ng-click="changeLanguage('zh_CN')" ng-class="{ 'bg-info': currentLang == 'zh_CN' }">简体中文</a></li>
               <li><a href ng-click="changeLanguage('zh_TW')" ng-class="{ 'bg-info': currentLang == 'zh_TW' }">繁體中文</a></li>
               <li><a href ng-click="changeLanguage('sq_AL')" ng-class="{ 'bg-info': currentLang == 'sq_AL' }">Shqip</a></li>

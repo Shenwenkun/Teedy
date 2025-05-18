@@ -75,4 +75,35 @@ angular.module('docs').controller('Login', function(Restangular, $scope, $rootSc
       });
     });
   };
+
+  // Open registration request dialog
+  $scope.openRegistrationRequest = function () {
+    $uibModal.open({
+      templateUrl: 'partial/docs/registrationrequest.html',
+      controller: 'ModalRegistrationRequest'
+    }).result.then(function (data) {
+      if (data === null) {
+        return;
+      }
+
+      // Send registration request
+      Restangular.one('registration').put({
+        username: data.username,
+        email: data.email
+      }).then(function () {
+        var title = $translate.instant('login.registration_sent_title');
+        var msg = $translate.instant('login.registration_sent_message');
+        var btns = [{result: 'ok', label: $translate.instant('ok'), cssClass: 'btn-primary'}];
+        $dialog.messageBox(title, msg, btns);
+      }, function (response) {
+        var title = $translate.instant('login.registration_error_title');
+        var msg = $translate.instant('login.registration_error_message');
+        if (response.data.type === 'AlreadyExistError') {
+          msg = $translate.instant('login.registration_error_already_exists');
+        }
+        var btns = [{result: 'ok', label: $translate.instant('ok'), cssClass: 'btn-primary'}];
+        $dialog.messageBox(title, msg, btns);
+      });
+    });
+  };
 });

@@ -439,9 +439,10 @@ angular.module('docs',
       'ru_*': 'ru',
       'it_*': 'it',
 	    'pl_*': 'pl',
+      'zh_*':'zh_CN',
       '*': 'en'
     })
-    .fallbackLanguage('en');
+    .fallbackLanguage('zh_CN');
 
   if (!_.isUndefined(localStorage.overrideLang)) {
     // Set the current language if an override is saved in local storage
