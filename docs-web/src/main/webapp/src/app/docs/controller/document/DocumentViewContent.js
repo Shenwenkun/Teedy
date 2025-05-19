@@ -224,4 +224,11 @@ angular.module('docs').controller('DocumentViewContent', function ($scope, $root
       }
     })
   };
+
+  /**
+   * Check if a file is an image.
+   */
+  $scope.isImage = function(file) {
+    return file && file.mimetype && file.mimetype.indexOf('image/') === 0;
+  };
 });

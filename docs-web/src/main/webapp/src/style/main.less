@@ -180,12 +180,69 @@ ul.tag-tree {
 
 // File view
 .modal-fileview {
-	top: 2%;
-	max-height: 96%;
-	overflow-y: scroll;
+  top: 2%;
+  max-height: 96%;
+  overflow-y: auto;
+  background: #1a1a1a;
+
+  .modal-content {
+    background: transparent;
+  }
+
+  .modal-body {
+    padding: 0;
+    position: relative;
+  }
+
+  .image-toolbar {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 8px;
+    border-radius: 4px;
+    transition: opacity 0.3s ease;
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    .btn-group {
+      margin-right: 5px;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+
+    .btn {
+      background: transparent;
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.3);
+      padding: 6px 12px;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      &.btn-success {
+        background: rgba(92, 184, 92, 0.5);
+        &:hover {
+          background: rgba(92, 184, 92, 0.7);
+        }
+      }
+    }
+  }
 
   img {
-    width: 100%;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    transform-origin: center center;
+    transition: transform 0.3s ease;
   }
 }
 
@@ -750,4 +807,35 @@ input[readonly].share-link {
   width: 0;
   padding-left: 0;
   padding-right: 0;
+}
+
+/* 图片预览容器 */
+.img-container {
+  max-height: 80vh;
+  overflow: hidden;
+  background-color: #f8f9fa;
+  
+  .img-preview {
+    max-width: 100%;
+    max-height: 80vh;
+    
+    &.cropping {
+      max-height: none;
+      max-width: none;
+    }
+  }
+}
+
+/* 裁剪工具样式 */
+.cropper-container {
+  margin: 0 auto;
+}
+
+.image-toolbar {
+  margin-bottom: 10px;
+  text-align: center;
+  
+  .btn-group {
+    margin: 5px;
+  }
 }

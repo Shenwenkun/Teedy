@@ -7,11 +7,13 @@ angular.module('docs').controller('Main', function($scope, $rootScope, $state, U
   User.userInfo().then(function(data) {
     if (data.anonymous) {
       $state.go('login', {}, {
-        location: 'replace'
+        location: 'replace',
+        notify: false
       });
     } else {
       $state.go('document.default', {}, {
-        location: 'replace'
+        location: 'replace',
+        notify: false
       });
     }
   });

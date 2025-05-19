@@ -97,6 +97,12 @@
                     {{ 'download' | translate }}
                   </a>
                 </li>
+                <li ng-if="isImage(file)">
+                  <a ng-click="editImage(file)">
+                    <span class="fas fa-edit"></span>
+                    {{ 'document.view.content.edit_image' | translate }}
+                  </a>
+                </li>
                 <li role="separator" class="divider"></li>
                 <li>
                   <a href ng-click="renameFile(file)">
@@ -187,6 +193,12 @@
               <a ng-href="../api/file/{{ file.id }}/data" target="_blank">
                 <span class="fas fa-download"></span>
                 {{ 'download' | translate }}
+              </a>
+            </li>
+            <li ng-if="isImage(file)">
+              <a ng-click="editImage(file)">
+                <span class="fas fa-edit"></span>
+                {{ 'document.view.content.edit_image' | translate }}
               </a>
             </li>
             <li role="separator" class="divider"></li>

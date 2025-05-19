@@ -39,6 +39,9 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.core.StreamingOutput;
+
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -807,6 +810,89 @@ public class FileResource extends BaseResource {
             if (!aclDao.checkPermission(file.getDocumentId(), PermType.READ, getTargetIdList(shareId))) {
                 throw new ForbiddenClientException();
             }
+        }
+    }
+
+    /**
+     * Updates file data.
+     *
+     * @api {put} /file/:id/data Update file data
+     * @apiName PutFileData
+     * @apiGroup File
+     * @apiParam {String} id File ID
+     * @apiParam {Object} file File data
+     * @apiSuccess {String} status Status OK
+     * @apiError (client) ForbiddenError Access denied
+     * @apiError (client) NotFound File not found
+     * @apiPermission user
+     * @apiVersion 1.5.0
+     *
+     * @param id File ID
+     * @return Response
+     */
+    @PUT
+    @Path("{id: [a-z0-9\\-]+}/data")
+    @Consumes("multipart/form-data")
+    public Response updateData(
+            @PathParam("id") String id,
+            @FormDataParam("file") FormDataBodyPart fileBodyPart) {
+        if (!authenticate()) {
+            throw new ForbiddenClientException();
+        }
+
+        // Get the file
+        File file = findFile(id, null);
+
+        // Validate input data
+        ValidationUtil.validateRequired(fileBodyPart, "file");
+
+        // Get the current user
+        UserDao userDao = new UserDao();
+        User user = userDao.getById(principal.getId());
+
+        // Keep unencrypted data temporary on disk
+        java.nio.file.Path unencryptedFile;
+        long fileSize;
+        try {
+            unencryptedFile = AppContext.getInstance().getFileService().createTemporaryFile();
+            Files.copy(fileBodyPart.getValueAs(InputStream.class), unencryptedFile, StandardCopyOption.REPLACE_EXISTING);
+            fileSize = Files.size(unencryptedFile);
+        } catch (IOException e) {
+            throw new ServerException("StreamError", "Error reading the input file", e);
+        }
+
+        try {
+            // Save the file
+            Cipher cipher = EncryptionUtil.getEncryptionCipher(user.getPrivateKey());
+            java.nio.file.Path path = DirectoryUtil.getStorageDirectory().resolve(file.getId());
+            try (InputStream inputStream = Files.newInputStream(unencryptedFile)) {
+                try (CipherInputStream cipherInputStream = new CipherInputStream(inputStream, cipher)) {
+                    Files.copy(cipherInputStream, path, StandardCopyOption.REPLACE_EXISTING);
+                }
+            }
+
+            // Update the file size
+            FileDao fileDao = new FileDao();
+            file.setSize(fileSize);
+            fileDao.update(file);
+
+            // Update the user quota
+            user.setStorageCurrent(user.getStorageCurrent() + fileSize);
+            userDao.updateQuota(user);
+
+            // Raise a file updated event
+            FileUpdatedAsyncEvent fileUpdatedAsyncEvent = new FileUpdatedAsyncEvent();
+            fileUpdatedAsyncEvent.setUserId(principal.getId());
+            fileUpdatedAsyncEvent.setFileId(file.getId());
+            fileUpdatedAsyncEvent.setUnencryptedFile(unencryptedFile);
+            ThreadLocalContext.get().addAsyncEvent(fileUpdatedAsyncEvent);
+
+            // Always return OK
+            JsonObjectBuilder response = Json.createObjectBuilder()
+                    .add("status", "ok");
+            return Response.ok().entity(response.build()).build();
+        } catch (Exception e) {
+            throw new ServerException("FileError", "Error updating file data", e);
         }
     }
 }
